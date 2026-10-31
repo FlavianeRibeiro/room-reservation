@@ -7,26 +7,26 @@ export class DomainError extends Error {
 }
 export class ValidationError extends DomainError {
   constructor(message: string) {
-    super(message, "VALIDATION");
+    super(message, 'VALIDATION');
   }
 }
 export class ConflictError extends DomainError {
   constructor(message: string) {
-    super(message, "CONFLICT");
+    super(message, 'CONFLICT');
   }
 }
 export class ForbiddenError extends DomainError {
   constructor(message: string) {
-    super(message, "FORBIDDEN");
+    super(message, 'FORBIDDEN');
   }
 }
 export class NotFoundError extends DomainError {
   constructor(message: string) {
-    super(message, "NOT_FOUND");
+    super(message, 'NOT_FOUND');
   }
 }
 export class UnauthenticatedError extends DomainError {
   constructor(message: string) {
-    super(message, "UNAUTHENTICATED");
+    super(message, 'UNAUTHENTICATED');
   }
 }
