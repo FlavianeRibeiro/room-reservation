@@ -1,6 +1,10 @@
 import { asc, eq } from 'drizzle-orm';
 import type { Db } from '@/db/client';
 import { resources, roomResources, rooms } from '@/db/schema';
+import { type User } from '@/db/schema';
+import { assertAdmin } from '@/features/auth/permissions';
+import { ConflictError, NotFoundError } from '@/lib/errors';
+import type { RoomInput } from './schemas';
 
 export type RoomFilters = { minCapacity?: number; resource?: string }; // dados do filtro passado por url
 
@@ -47,4 +51,73 @@ export function getRoom(db: Db, id: number) {
     .all()
     .map((r) => r.id);
   return { ...room, resourceIds };
+}
+//Se der erro no meio do processo, o banco desfaz tudo para não deixar dados quebrados.
+type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
+
+function setResources(tx: Tx, roomId: number, resourceIds: number[]) {
+  tx.delete(roomResources).where(eq(roomResources.roomId, roomId)).run();
+  if (resourceIds.length > 0) {
+    tx.insert(roomResources)
+      .values(resourceIds.map((resourceId) => ({ roomId, resourceId })))
+      .run();
+  }
+}
+
+export function createRoom(db: Db, user: Pick<User, 'role'>, input: RoomInput) {
+  assertAdmin(user);
+  return db.transaction((tx) => {
+    const exists = tx
+      .select()
+      .from(rooms)
+      .where(eq(rooms.name, input.name))
+      .get();
+    if (exists) throw new ConflictError('Já existe uma sala com esse nome.');
+    const room = tx
+      .insert(rooms)
+      .values({
+        name: input.name,
+        capacity: input.capacity,
+        location: input.location || null,
+      })
+      .returning()
+      .get();
+    setResources(tx, room.id, input.resourceIds);
+    return room;
+  });
+}
+
+export function updateRoom(
+  db: Db,
+  user: Pick<User, 'role'>,
+  id: number,
+  input: RoomInput,
+  active: boolean,
+) {
+  assertAdmin(user);
+  return db.transaction((tx) => {
+    const current = tx.select().from(rooms).where(eq(rooms.id, id)).get();
+    if (!current) throw new NotFoundError('Sala não encontrada.');
+    const duplicate = tx
+      .select()
+      .from(rooms)
+      .where(eq(rooms.name, input.name))
+      .get();
+    if (duplicate && duplicate.id !== id) {
+      throw new ConflictError('Já existe uma sala com esse nome.');
+    }
+    const room = tx
+      .update(rooms)
+      .set({
+        name: input.name,
+        capacity: input.capacity,
+        location: input.location || null,
+        active,
+      })
+      .where(eq(rooms.id, id))
+      .returning()
+      .get();
+    setResources(tx, id, input.resourceIds);
+    return room;
+  });
 }
