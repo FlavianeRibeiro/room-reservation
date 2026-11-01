@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createBooking } from '@/features/bookings/service';
+import { cancelBooking, createBooking } from '@/features/bookings/service';
 import { ConflictError } from '@/lib/errors';
 import { makeTestDb } from '../helpers/test-db';
 
@@ -77,4 +77,24 @@ describe('regra de sobreposição (SALA-2)', () => {
       ),
     ).not.toThrow();
   });
+});
+
+it('libera o horário depois de cancelar', () => {
+  const { db, ana, bruno, room } = makeTestDb();
+  const first = createBooking(
+    db,
+    ana,
+    { roomId: room.id, start: at('10:00'), end: at('11:00') },
+    NOW,
+  );
+  cancelBooking(db, ana, first.id, NOW);
+
+  expect(() =>
+    createBooking(
+      db,
+      bruno,
+      { roomId: room.id, start: at('10:00'), end: at('11:00') },
+      NOW,
+    ),
+  ).not.toThrow();
 });

@@ -17,7 +17,7 @@ export const users = sqliteTable('users', {
 
 export const rooms = sqliteTable('rooms', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   capacity: integer('capacity').notNull(),
   location: text('location'),
   active: integer('active', { mode: 'boolean' }).notNull().default(true),
