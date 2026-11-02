@@ -12,6 +12,7 @@ type Props = {
     location: string | null;
     active: boolean;
     resourceIds: number[];
+    maxDurationMinutes: number;
   };
 };
 
@@ -44,6 +45,18 @@ export default function RoomForm({ action, resources, room }: Props) {
         <input
           name="location"
           defaultValue={room?.location ?? ''}
+          className="rounded border p-2"
+        />
+      </label>
+      <label className="flex flex-col text-sm">
+        Duração máxima da reserva (minutos)
+        <input
+          type="number"
+          name="maxDurationMinutes"
+          min={15}
+          max={1440}
+          defaultValue={room?.maxDurationMinutes ?? 240}
+          required
           className="rounded border p-2"
         />
       </label>

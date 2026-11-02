@@ -17,7 +17,7 @@ export function createBooking(
   const room = db.select().from(rooms).where(eq(rooms.id, input.roomId)).get();
   if (!room || !room.active) throw new NotFoundError('Sala não encontrada.');
 
-  validateBooking({ start: input.start, end: input.end }, now);
+  validateBooking({ start: input.start, end: input.end }, room, now);
 
   return db.transaction(
     (tx) => {

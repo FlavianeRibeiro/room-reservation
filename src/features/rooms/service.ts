@@ -79,6 +79,7 @@ export function createRoom(db: Db, user: Pick<User, 'role'>, input: RoomInput) {
         name: input.name,
         capacity: input.capacity,
         location: input.location || null,
+        maxDurationMinutes: input.maxDurationMinutes,
       })
       .returning()
       .get();
@@ -113,6 +114,7 @@ export function updateRoom(
         capacity: input.capacity,
         location: input.location || null,
         active,
+        maxDurationMinutes: input.maxDurationMinutes,
       })
       .where(eq(rooms.id, id))
       .returning()

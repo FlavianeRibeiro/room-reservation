@@ -18,6 +18,11 @@ export const roomInputSchema = z.object({
     .max(500, 'A capacidade máxima é 500 pessoas.'),
   location: z.string().trim().max(80).optional(),
   resourceIds: z.array(z.coerce.number().int()),
+  maxDurationMinutes: z.coerce
+    .number()
+    .int('A duração máxima deve ser um número inteiro de minutos.')
+    .min(15, 'A duração máxima deve ser de pelo menos 15 minutos.')
+    .max(1440, 'A duração máxima é de no máximo 24 horas.'),
 });
 
 export type RoomInput = z.infer<typeof roomInputSchema>;
@@ -28,5 +33,6 @@ export function parseRoomForm(formData: FormData): RoomInput {
     capacity: formData.get('capacity') ?? '',
     location: formData.get('location') ?? '',
     resourceIds: formData.getAll('resourceIds'),
+    maxDurationMinutes: formData.get('maxDurationMinutes') ?? '',
   });
 }
