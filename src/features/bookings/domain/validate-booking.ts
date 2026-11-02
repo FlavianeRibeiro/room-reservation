@@ -1,10 +1,11 @@
 import { ValidationError } from '@/lib/errors';
 
 export const MIN_DURATION_MINUTES = 15;
-export const MAX_DURATION_MINUTES = 240; // 4 horas
+export const DEFAULT_MAX_DURATION_MINUTES = 240;
 
 export function validateBooking(
   input: { start: Date; end: Date },
+  room: { maxDurationMinutes: number },
   now: Date,
 ): void {
   const start = input.start.getTime();
@@ -24,7 +25,9 @@ export function validateBooking(
   if (minutes < MIN_DURATION_MINUTES) {
     throw new ValidationError('A reserva deve durar pelo menos 15 minutos.');
   }
-  if (minutes > MAX_DURATION_MINUTES) {
-    throw new ValidationError('A reserva pode durar no máximo 4 horas.');
+  if (minutes > room.maxDurationMinutes) {
+    throw new ValidationError(
+      `Esta sala permite reservas de no máximo ${room.maxDurationMinutes} minutos.`,
+    );
   }
 }

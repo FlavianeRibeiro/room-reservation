@@ -21,6 +21,7 @@ export const rooms = sqliteTable('rooms', {
   capacity: integer('capacity').notNull(),
   location: text('location'),
   active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  maxDurationMinutes: integer('max_duration_minutes').notNull().default(240),
 });
 
 export const resources = sqliteTable('resources', {

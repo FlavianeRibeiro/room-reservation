@@ -7,6 +7,7 @@ const input = {
   name: 'Sala Nova',
   capacity: 6,
   location: '',
+  maxDurationMinutes: 240,
   resourceIds: [] as number[],
 };
 

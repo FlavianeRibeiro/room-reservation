@@ -18,7 +18,7 @@ export default async function BookPage({
     <div>
       <h1 className="mb-1 text-2xl font-bold">Reservar: {room.name}</h1>
       <p className="mb-4 text-sm text-slate-600">
-        Capacidade: {room.capacity} pessoas. Duração: de 15 minutos a 4 horas.
+        Duração: de 15 minutos a {room.maxDurationMinutes} minutos.
       </p>
       {user ? (
         <BookingForm roomId={room.id} />
