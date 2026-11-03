@@ -80,12 +80,15 @@ export default async function RoomsPage({
               <p className="my-2 text-sm">
                 {room.resources.join(', ') || 'Sem recursos'}
               </p>
-              <Link
-                href={`/rooms/${room.id}/book`}
-                className="text-sm font-medium underline"
-              >
-                Reservar
-              </Link>
+
+              <div className="mt-auto pt-2">
+                <Link
+                  href={`/rooms/${room.id}/book`}
+                  className="text-sm font-medium underline"
+                >
+                  Reservar
+                </Link>
+              </div>
             </li>
           ))}
         </ul>

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "fa830bb0-959e-4010-a878-de8e13d9bc4f",
+  "id": "6d30d8b7-ea4f-4d50-af72-4e71af75e1fe",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "bookings": {
@@ -212,15 +212,17 @@
           "notNull": true,
           "autoincrement": false,
           "default": true
+        },
+        "max_duration_minutes": {
+          "name": "max_duration_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 240
         }
       },
-      "indexes": {
-        "rooms_name_unique": {
-          "name": "rooms_name_unique",
-          "columns": ["name"],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
