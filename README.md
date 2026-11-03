@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reserva de Salas
 
-## Getting Started
+Sistema interno para reservar salas de reunião. Desafio técnico Full Stack Pleno (Sensedia). Versão atual: **1.1.0**.
 
-First, run the development server:
+## Como rodar (3 comandos)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run db:setup   # aplica as migrations e carrega o seed
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requer Node 22. Testes: `npm test`. Qualidade: `npm run lint && npm run typecheck`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Usuários do seed** (use o seletor «Entrar como» no topo).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack e justificativas
 
-## Learn More
+| Tecnologia | Por quê |
+|---|---|
+| Next.js 15 (App Router) + TypeScript strict | Exigido. Server Components e Server Actions mantêm a lógica no servidor |
+| SQLite (better-sqlite3) | Relacional, zero infraestrutura, transações síncronas que simplificam a proteção contra corrida |
+| Drizzle ORM + drizzle-kit | Schema em TypeScript, migrations em SQL versionadas, fácil trocar para PostgreSQL |
+| Zod | Validação de entradas com mensagens claras |
+| Tailwind CSS | Interface simples e rápida |
+| Vitest | Testes rápidos, banco SQLite em memória |
+| GitHub Actions | CI: lint, tipos, testes e build em todo PR |
+| Husky + commitlint | Impor Conventional Commits |
 
-To learn more about Next.js, take a look at the following resources:
+## Arquitetura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `src/app`: telas e rotas (finas, só chamam serviços).
+- `src/features/*`: regras de negócio por assunto.  `service.ts` orquestra banco e regras.
+- `src/db`: schema, migrations, seed.
+- Os serviços recebem o banco e o relógio por parâmetro, o que torna os testes simples e determinísticos.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Regras de negócio
 
-## Deploy on Vercel
+| Regra | Onde está |
+|---|---|
+| Sem sobreposição na mesma sala (reservas encostadas são permitidas) | `bookings/service.ts`, dentro de transação `IMMEDIATE` |
+| Sem reserva no passado | `domain/validate-booking.ts` |
+| Duração mínima de 15 min e máxima definida **por sala** (padrão 240 min) | `domain/validate-booking.ts` |
+| Somente dias úteis (seg–sex), das 08h às 20h, fuso America/Sao_Paulo | `domain/business-hours.ts` |
+| Cancelar apenas as próprias reservas | `auth/permissions.ts` (`assertCanCancel`) |
+| Somente admin cadastra/edita salas | `auth/permissions.ts` (`assertAdmin`) + `requireAdminPage` |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Decisões e premissas
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Login simulado: cookie com o id do usuário; o papel é sempre lido do banco.]
+- [Server Actions no lugar de API REST: rodam no servidor e reduzem código.]
+- [Cancelamento é *soft delete* (`status = canceled`). Não se cancela reserva já encerrada ou cancelada.]
+- [Nem o admin cancela reservas de terceiros, pois o requisito diz «apenas as próprias».]
+- [Editar uma sala vale para novas reservas; reservas existentes não são revalidadas.]
+- [Salas são desativadas, não apagadas, para preservar o histórico.]
+- [Filtros de salas aplicados em memória (poucas salas). Com muitas salas iriam para o SQL.]
+
+## Testes
+
+`npm test` roda tudo. Cobertura principal:
+
+- `tests/bookings/overlap.test.ts`: regra de sobreposição (5 cenários de conflito, bordas e salas diferentes).
+- `tests/bookings/cancel-permission.test.ts`: permissão de cancelamento.
+- `tests/rooms/*`: listagem com filtros e permissões de admin.
+
+## Git flow
+
+`main` = produção, 
+`develop` = integração. 
+Branches `release/1.1.0, develop, feature/sala-6-duracao-maxima-por-sala, feature/SALA-4-admin-salas, feature/sala-2-reservar-sala, feature/sala-1-listar-salas, chore/base-dados, chore/setup`.
+
+Conventional Commits e tudo via PR (merge commit).
+
+1. Setup, 2. Features SALA-1 a SALA-4, 3. Release 1.0.0, 4. SALA-6,  5. Release 1.1.0.
