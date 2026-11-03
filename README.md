@@ -1,10 +1,10 @@
-# SALA-2: Reserva de Salas e Proteção contra Sobreposição
+# Configurações Iniciais e Base de Qualidade
 
-Esta branch entrega a funcionalidade principal de agendamento de salas, garantindo a integridade dos horários e validando os limites permitidos.
+Esta branch estabeleceu a infraestrutura inicial do projeto, garantindo os padrões de qualidade, formatação de código e testes automatizados antes do desenvolvimento das funcionalidades.
 
-## O que foi implementado
+## O que foi configurado
 
-- **Formulário de agendamento**: Escolha de data, hora de início e hora de término para a sala selecionada.
-- **Validação de horário comercial e limites**: Restrição para reservas com duração entre 15 minutos e 4 horas, impedindo agendamentos no passado.
-- **Prevenção de conflitos**: Validação no servidor que impede a reserva de uma sala já ocupada no mesmo intervalo de tempo (inclusive requisições simultâneas).
-- **Testes dedicados**: Validação de cenários de sobreposição de horários e limites de duração.
+- **Ambiente de testes**: Configuração do Vitest com um teste básico para validação da esteira.
+- **Formatação e estilo**: Padrões de código definidos com Prettier e validações de regras com ESLint.
+- **Padrão de commits**: Configuração do Commitlint e Husky para garantir que todos os commits sigam o padrão padronizado (Conventional Commits).
+- **Integração contínua (CI)**: Criação de fluxo automatizado no GitHub Actions para verificar tipos, lint e testes a cada novo envio.
