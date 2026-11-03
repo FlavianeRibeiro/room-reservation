@@ -1,10 +1,12 @@
-# SALA-2: Reserva de Salas e Proteção contra Sobreposição
 
-Esta branch entrega a funcionalidade principal de agendamento de salas, garantindo a integridade dos horários e validando os limites permitidos.
+# SALA-1: Listagem e Filtro de Salas
+
+Esta branch implementa a exibição das salas disponíveis na aplicação com suporte a filtros dinâmicos integrados à URL.
 
 ## O que foi implementado
 
-- **Formulário de agendamento**: Escolha de data, hora de início e hora de término para a sala selecionada.
-- **Validação de horário comercial e limites**: Restrição para reservas com duração entre 15 minutos e 4 horas, impedindo agendamentos no passado.
-- **Prevenção de conflitos**: Validação no servidor que impede a reserva de uma sala já ocupada no mesmo intervalo de tempo (inclusive requisições simultâneas).
-- **Testes dedicados**: Validação de cenários de sobreposição de horários e limites de duração.
+- **Página de salas**: Exibição em grade com nome, capacidade e recursos disponíveis.
+- **Filtros por URL**: Filtragem por capacidade mínima e por recursos específicos mantida diretamente na barra de endereços (query params), permitindo compartilhamento do link.
+- **Validação de entradas**: Tratamento dos parâmetros da URL para evitar comportamentos inesperados ao inserir dados inválidos.
+- **Testes dedicados**: Cobertura das regras de busca e filtros de salas.
+
