@@ -1,3 +1,4 @@
+
 # Reserva de Salas
 
 Sistema interno para reservar salas de reunião. Desafio técnico Full Stack Pleno (Sensedia). Versão atual: **1.1.0**.
@@ -72,3 +73,4 @@ Branches `release/1.1.0, develop, feature/sala-6-duracao-maxima-por-sala, featur
 Conventional Commits e tudo via PR (merge commit).
 
 1. Setup, 2. Features SALA-1 a SALA-4, 3. Release 1.0.0, 4. SALA-6,  5. Release 1.1.0.
+
