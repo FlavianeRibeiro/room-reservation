@@ -8,6 +8,14 @@ export function formatDateTime(value: Date): string {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: TIMEZONE,
     dateStyle: 'short',
-    timeStyle: 'short',
+  }).format(value);
+}
+
+export function formatTime(value: Date): string {
+  return new Intl.DateTimeFormat('pt-BR', {
+    timeZone: TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false, // Garante o formato de 24 horas
   }).format(value);
 }

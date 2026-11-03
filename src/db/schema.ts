@@ -17,10 +17,11 @@ export const users = sqliteTable('users', {
 
 export const rooms = sqliteTable('rooms', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   capacity: integer('capacity').notNull(),
   location: text('location'),
   active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  maxDurationMinutes: integer('max_duration_minutes').notNull().default(240),
 });
 
 export const resources = sqliteTable('resources', {

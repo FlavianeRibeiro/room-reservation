@@ -3,7 +3,7 @@ import { users } from '@/db/schema';
 import { loginAs } from '@/features/auth/actions';
 import { getCurrentUser } from '@/features/auth/session';
 
-export default async function UserSwitcher() {
+export default async function User() {
   const current = await getCurrentUser();
   const all = getDb().select().from(users).all();
   return (
